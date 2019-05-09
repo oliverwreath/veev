@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -58,8 +59,8 @@ public class Document {
         this.modifiedTime = documentFormatter.parseDateTimeString2Long(modifiedTime);
     }
 
-    @Deprecated
-    public String toStringDeprecated() {
+    @Override
+    public String toString() {
         return "Document{" +
                 "'" + createdBy + '\'' +
                 ",'" + name + '\'' +
@@ -70,11 +71,9 @@ public class Document {
                 '}';
     }
 
-    @Override
-    public String toString() {
+    public String toStringBeautify() {
         return "Document{" +
-                "'" + createdBy + '\'' +
-                ",'" + name + '\'' +
+                "'" + name + '\'' +
                 ",'" + formatDescription(description) + '\'' +
                 "," + formatSize(sizeInBytes) +
                 "," + formatTime(createdTime) +
@@ -209,7 +208,9 @@ public class Document {
      * <p>
      * #1
      * Group by document.createdBy
+     * #1.2.
      * Sort the groups using document.createdBy ascending, case insensitive
+     * #1.3.
      * Sort each sub list of documents by document.createdTime ascending
      * <p>
      * #2
@@ -250,11 +251,12 @@ public class Document {
 
         // prepare the map
         log.debug("\n\nprintDocumentsReport(): documents = {}\n", documents);
-        Map<String, List<Document>> mapString2Documents = new HashMap<>();
+        Map<String, PriorityQueue<Document>> mapString2Documents = new HashMap<>();
         for (Document document : documents) {
             String key = document.getCreatedBy();
             if (!mapString2Documents.containsKey(key)) {
-                mapString2Documents.put(key, new LinkedList<>());
+                // #1.3. Sort each sub list of documents by document.createdTime ascending
+                mapString2Documents.put(key, new PriorityQueue<>(Comparator.comparingLong(o -> o.createdTime)));
             }
             mapString2Documents.get(key).add(document);
         }
@@ -262,12 +264,14 @@ public class Document {
         // populate the stringBuilder
         StringBuilder stringBuilder = new StringBuilder();
         log.debug("mapString2Documents.keySet().size() = {}", mapString2Documents.keySet().size());
-        for (String key : mapString2Documents.keySet()) {
+        // #1.2. Sort the groups using document.createdBy ascending, case insensitive
+        List<String> keys = mapString2Documents.keySet().stream().sorted(Comparator.comparing(String::toLowerCase)).collect(Collectors.toList());
+        for (String key : keys) {
             log.debug("key = {}; \nmapString2Documents.get(key).size() = {}", key, mapString2Documents.get(key).size());
             stringBuilder.append(key).append('\n');
             for (Document document : mapString2Documents.get(key)) {
                 log.debug("document = {}", document);
-                stringBuilder.append(document.toString()).append('\n');
+                stringBuilder.append(document.toStringBeautify()).append('\n');
             }
         }
         return stringBuilder;

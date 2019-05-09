@@ -10,7 +10,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static com.oliver.Document.DEFAULT_YYYYMMDD_PATTERN;
 import static com.oliver.Document.Sizes;
 
 /**
@@ -41,8 +40,8 @@ class DocumentTest {
         Validate.isTrue(document.printDocumentsReportHelper(new LinkedList<>()).toString().equals(""));
 
         // prepare the formatter first
-        DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern(DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA);
-        ZoneOffset zoneOffsetToronto = ZoneOffset.of(Document.ZoneOffset_TORONTO);
+        DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern(Document.DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA);
+        ZoneOffset zoneOffsetToronto = ZoneOffset.of(Document.DocumentFormatter.ZoneOffset_TORONTO);
         Map<String, Long> map4ParsingSize = new HashMap<>();
         map4ParsingSize.put(Sizes.bytes.toString(), 1L);
         map4ParsingSize.put(Sizes.k.toString(), 1024L);
@@ -87,8 +86,8 @@ class DocumentTest {
 
     @Test
     void test_WhenCreatingOneDocument_TheContentsAreAsExpected() {
-        DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern(DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA);
-        ZoneOffset zoneOffsetToronto = ZoneOffset.of(Document.ZoneOffset_TORONTO);
+        DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern(Document.DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA);
+        ZoneOffset zoneOffsetToronto = ZoneOffset.of(Document.DocumentFormatter.ZoneOffset_TORONTO);
         Map<String, Long> map4ParsingSize = new HashMap<>();
         map4ParsingSize.put(Sizes.bytes.toString(), 1L);
         map4ParsingSize.put(Sizes.k.toString(), 1024L);
@@ -115,14 +114,14 @@ class DocumentTest {
     void test_WhenFormatDescription_TheTruncatedAsExpected() {
         Document document = new Document();
         // corner cases
-        Validate.isTrue(document.formatDescription(null).equals(""));
-        Validate.isTrue(document.formatDescription("").equals(""));
+        Validate.isTrue(Document.PrintingFormatter.formatDescription(null).equals(""));
+        Validate.isTrue(Document.PrintingFormatter.formatDescription("").equals(""));
 
         // format description
-        Validate.isTrue(document.formatDescription(TOO_LONG_EXPECT_TRUNCATION).equals(TOO_LONG_EXPECT_TRUNCATION_TRUNCATED));
-        Validate.isTrue(document.formatDescription(TOO_LONG_BUT_DONT_CHOP_THE_WORD).equals(TOO_LONG_BUT_DONT_CHOP_THE_WORD_TRUNCATED));
-        Validate.isTrue(document.formatDescription(TOO_LONG_FIRST_WORD_CHOP_IT).equals(TOO_LONG_FIRST_WORD_CHOP_IT_TRUNCATED));
-        Validate.isTrue(document.formatDescription(SHORT_NO_TRUNCATION).equals(SHORT_NO_TRUNCATION));
+        Validate.isTrue(Document.PrintingFormatter.formatDescription(TOO_LONG_EXPECT_TRUNCATION).equals(TOO_LONG_EXPECT_TRUNCATION_TRUNCATED));
+        Validate.isTrue(Document.PrintingFormatter.formatDescription(TOO_LONG_BUT_DONT_CHOP_THE_WORD).equals(TOO_LONG_BUT_DONT_CHOP_THE_WORD_TRUNCATED));
+        Validate.isTrue(Document.PrintingFormatter.formatDescription(TOO_LONG_FIRST_WORD_CHOP_IT).equals(TOO_LONG_FIRST_WORD_CHOP_IT_TRUNCATED));
+        Validate.isTrue(Document.PrintingFormatter.formatDescription(SHORT_NO_TRUNCATION).equals(SHORT_NO_TRUNCATION));
     }
 
     @Test
@@ -132,21 +131,21 @@ class DocumentTest {
         Document.DocumentFormatter documentFormatter = new Document.DocumentFormatter();
         List<String> listDocuments = new LinkedList<>(Arrays.asList("423 bytes", "924 k", "233 mb", "48 mb", "87 gb", "233 tb", "233 pb"));
         for (String oneDocument : listDocuments) {
-            Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long(oneDocument)).equals(oneDocument));
+            Validate.isTrue(Document.PrintingFormatter.formatSize(documentFormatter.parseSizeString2Long(oneDocument)).equals(oneDocument));
         }
         // corner cases
-        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long(null)).equals(""));
-        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("")).equals(""));
+        Validate.isTrue(Document.PrintingFormatter.formatSize(documentFormatter.parseSizeString2Long(null)).equals(""));
+        Validate.isTrue(Document.PrintingFormatter.formatSize(documentFormatter.parseSizeString2Long("")).equals(""));
 
         // format time - parse back and forth should still equal
         List<String> listDateTime = new LinkedList<>(Arrays.asList("1900-01-01", "2013-01-01", "2013-05-09", "2013-05-10", "2013-05-12", "2019-03-03", "2099-12-31"));
         for (String oneDateTime : listDateTime) {
-            Validate.isTrue(document.formatTime(documentFormatter.parseDateTimeString2Long(oneDateTime)).equals(oneDateTime));
+            Validate.isTrue(Document.PrintingFormatter.formatTime(documentFormatter.parseDateTimeString2Long(oneDateTime)).equals(oneDateTime));
         }
         // corner cases
-        Validate.isTrue(!document.formatTime(documentFormatter.parseDateTimeString2Long("2012-02-31")).equals("2012-02-31"));
-        Validate.isTrue(document.formatTime(documentFormatter.parseDateTimeString2Long(null)).equals(""));
-        Validate.isTrue(document.formatTime(documentFormatter.parseDateTimeString2Long("")).equals(""));
+        Validate.isTrue(!Document.PrintingFormatter.formatTime(documentFormatter.parseDateTimeString2Long("2012-02-31")).equals("2012-02-31"));
+        Validate.isTrue(Document.PrintingFormatter.formatTime(documentFormatter.parseDateTimeString2Long(null)).equals(""));
+        Validate.isTrue(Document.PrintingFormatter.formatTime(documentFormatter.parseDateTimeString2Long("")).equals(""));
     }
 
     @AfterAll

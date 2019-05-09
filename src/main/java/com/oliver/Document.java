@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class Document {
+    // fields
     String name;
     String description;// (#2.3 format: max length 25, don't truncate any words unless the first word > 25, display "..." if truncated(these 3 do not count as part of 25))
     String createdBy;// #1.1. Group by document.createdBy, sort ascending.
@@ -32,13 +33,11 @@ public class Document {
     Long sizeInBytes;// format to 50 mb, 900 k, 342 bytes
     Long createdTime;// #1.2. sort ascending; (#2.2 format: yyyy-MM-dd)
     Long modifiedTime;// (#2.2 format: yyyy-MM-dd)
-
-    static final String ZoneOffset_TORONTO = "-05:00";
+    // constants
     static final String DEFAULT_YYYYMMDD_PATTERN = "yyyy-MM-dd";
-    static final String truncatedIndication = "...";
 
     /**
-     * constructor
+     * constructors
      *
      * @param name
      * @param description
@@ -65,6 +64,11 @@ public class Document {
         this.modifiedTime = documentFormatter.parseDateTimeString2Long(modifiedTime);
     }
 
+    /**
+     * toStrings
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "Document{" +
@@ -80,107 +84,120 @@ public class Document {
     String toStringBeautify() {
         return "Document{" +
                 "'" + name + '\'' +
-                ",'" + formatDescription(description) + '\'' +
-                "," + formatSize(sizeInBytes) +
-                "," + formatTime(createdTime) +
-                "," + formatTime(modifiedTime) +
+                ",'" + PrintingFormatter.formatDescription(description) + '\'' +
+                "," + PrintingFormatter.formatSize(sizeInBytes) +
+                "," + PrintingFormatter.formatTime(createdTime) +
+                "," + PrintingFormatter.formatTime(modifiedTime) +
                 '}';
     }
 
-    String formatDescription(final String description) {
-        // Validate preconditions
-        if (StringUtils.isBlank(description)) {
-            return "";
-        }
+    /**
+     * formatters for printing values
+     */
+    static class PrintingFormatter {
+        // constants
+        static final String truncatedIndication = "...";
+        private static final List<Pair<Long, String>> sizeList;
 
-        // DON't truncate
-        if (description.length() <= 25) {
-            return description;
-        }
-        // DO truncate
-        boolean isFirstWordTooLong = true;
-        for (int i = 0; i < 25; i++) {
-            if (' ' == description.charAt(i)) {
-                isFirstWordTooLong = false;
-                break;
-            }
-        }
-
-        if (isFirstWordTooLong) {
-            // chop the word if necessary
-            return description.substring(0, 25) + truncatedIndication;
-        } else {
-            // MUST truncate BUT don't chop last word.
-            int endIndex = 25;
-            while (endIndex < description.length()) {
-                if (' ' == description.charAt(endIndex)) {
-                    break;
-                }
-                endIndex++;
-            }
-
-            String truncated = description.substring(0, endIndex);
-            return truncated + truncatedIndication;
-        }
-    }
-
-    String formatTime(final Long timeToFormat, final String dateTimePattern) {
-        // Validate preconditions
-        Validate.notBlank(dateTimePattern);
-        if (timeToFormat == null) {
-            return "";
-        }
-
-        SimpleDateFormat df2 = new SimpleDateFormat(dateTimePattern);
-        String dateText = df2.format(new Date(timeToFormat));
-        log.debug("formatTime: {} to {}", timeToFormat, dateText);
-        return dateText;
-    }
-
-    String formatTime(final Long timeToFormat) {
-        // Validate preconditions
-        if (timeToFormat == null) {
-            return "";
-        }
-
-        SimpleDateFormat df2 = new SimpleDateFormat(DEFAULT_YYYYMMDD_PATTERN);
-        String dateText = df2.format(new Date(timeToFormat));
-        log.debug("formatTime: {} to {}", timeToFormat, dateText);
-        return dateText;
-    }
-
-    private static final List<Pair<Long, String>> sizeList;
-
-    static {
-        sizeList = new LinkedList<>();
+        static {
+            sizeList = new LinkedList<>();
 //        sizeList.add(Pair.of(1208925819614629174706176L, Sizes.yb.toString()));
 //        sizeList.add(Pair.of(1180591620717411303424L, Sizes.zb.toString()));
 //        sizeList.add(Pair.of(1152921504606846976L, Sizes.eb.toString()));
-        sizeList.add(Pair.of(1125899906842624L, Sizes.pb.toString()));
-        sizeList.add(Pair.of(1099511627776L, Sizes.tb.toString()));
-        sizeList.add(Pair.of(1073741824L, Sizes.gb.toString()));
-        sizeList.add(Pair.of(1048576L, Sizes.mb.toString()));
-        sizeList.add(Pair.of(1024L, Sizes.k.toString()));
-        sizeList.add(Pair.of(1L, Sizes.bytes.toString()));
-    }
-
-    String formatSize(final Long sizeInBytes) {
-        // Validate preconditions
-        if (sizeInBytes == null) {
-            return "";
+            sizeList.add(Pair.of(1125899906842624L, Sizes.pb.toString()));
+            sizeList.add(Pair.of(1099511627776L, Sizes.tb.toString()));
+            sizeList.add(Pair.of(1073741824L, Sizes.gb.toString()));
+            sizeList.add(Pair.of(1048576L, Sizes.mb.toString()));
+            sizeList.add(Pair.of(1024L, Sizes.k.toString()));
+            sizeList.add(Pair.of(1L, Sizes.bytes.toString()));
         }
 
-        for (Pair<Long, String> longStringPair : sizeList) {
-            if (sizeInBytes > longStringPair.getLeft()) {
-                return sizeInBytes / longStringPair.getLeft() + " " + longStringPair.getRight();
+        static String formatDescription(final String description) {
+            // Validate preconditions
+            if (StringUtils.isBlank(description)) {
+                return "";
+            }
+
+            // DON't truncate
+            if (description.length() <= 25) {
+                return description;
+            }
+            // DO truncate
+            boolean isFirstWordTooLong = true;
+            for (int i = 0; i < 25; i++) {
+                if (' ' == description.charAt(i)) {
+                    isFirstWordTooLong = false;
+                    break;
+                }
+            }
+
+            if (isFirstWordTooLong) {
+                // chop the word if necessary
+                return description.substring(0, 25) + truncatedIndication;
+            } else {
+                // MUST truncate BUT don't chop last word.
+                int endIndex = 25;
+                while (endIndex < description.length()) {
+                    if (' ' == description.charAt(endIndex)) {
+                        break;
+                    }
+                    endIndex++;
+                }
+
+                String truncated = description.substring(0, endIndex);
+                return truncated + truncatedIndication;
             }
         }
 
-        return "0 " + Sizes.bytes;
+        String formatTime(final Long timeToFormat, final String dateTimePattern) {
+            // Validate preconditions
+            Validate.notBlank(dateTimePattern);
+            if (timeToFormat == null) {
+                return "";
+            }
+
+            SimpleDateFormat df2 = new SimpleDateFormat(dateTimePattern);
+            String dateText = df2.format(new Date(timeToFormat));
+            log.debug("formatTime: {} to {}", timeToFormat, dateText);
+            return dateText;
+        }
+
+        static String formatTime(final Long timeToFormat) {
+            // Validate preconditions
+            if (timeToFormat == null) {
+                return "";
+            }
+
+            SimpleDateFormat df2 = new SimpleDateFormat(DEFAULT_YYYYMMDD_PATTERN);
+            String dateText = df2.format(new Date(timeToFormat));
+            log.debug("formatTime: {} to {}", timeToFormat, dateText);
+            return dateText;
+        }
+
+        static String formatSize(final Long sizeInBytes) {
+            // Validate preconditions
+            if (sizeInBytes == null) {
+                return "";
+            }
+
+            for (Pair<Long, String> longStringPair : sizeList) {
+                if (sizeInBytes > longStringPair.getLeft()) {
+                    return sizeInBytes / longStringPair.getLeft() + " " + longStringPair.getRight();
+                }
+            }
+
+            return "0 " + Sizes.bytes;
+        }
     }
 
+    /**
+     * formatters for setting values
+     */
     @NoArgsConstructor
     protected static class DocumentFormatter {
+        // constants
+        static final String ZoneOffset_TORONTO = "-05:00";
+        // timeZoneSettings etc.
         private DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern(DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA);
         private ZoneOffset zoneOffsetToronto = ZoneOffset.of(ZoneOffset_TORONTO);
         private static Map<String, Long> map4ParsingSize = new HashMap<>();

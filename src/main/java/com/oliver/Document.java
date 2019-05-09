@@ -3,6 +3,7 @@ package com.oliver;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -249,7 +250,9 @@ public class Document {
      */
     public StringBuilder printDocumentsReportHelper(final List<Document> documents) {
         // Validate preconditions
-        Validate.notEmpty(documents);
+        if (CollectionUtils.isEmpty(documents)) {
+            return new StringBuilder();
+        }
 
         // prepare the map
         log.debug("\n\nprintDocumentsReport(): documents = {}\n", documents);

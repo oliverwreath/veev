@@ -34,6 +34,10 @@ class DocumentTest {
 
     @Test
     void test_WhenPrintDocumentsReportHelper_TheContentsAreAsExpected() {
+        Document document = new Document();
+        document.printDocumentsReportHelper(null);
+        document.printDocumentsReportHelper(new LinkedList<>());
+
         // prepare the formatter first
         DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.CANADA);
         ZoneOffset zoneOffsetToronto = ZoneOffset.of("-05:00");
@@ -62,8 +66,8 @@ class DocumentTest {
         log.debug("sizeList = {}", lst);
 
         // run the core function
-        new Document().printDocumentsReport(lst);
-        Validate.isTrue(new Document().printDocumentsReportHelper(lst).toString().equals("Andy Andrews\n" +
+        document.printDocumentsReport(lst);
+        Validate.isTrue(document.printDocumentsReportHelper(lst).toString().equals("Andy Andrews\n" +
                 "Document{'Andy Sauce','SHORT_NO_TRUNCATION',87 gb,1000-05-04,2013-05-10}\n" +
                 "Document{'Andy Zed','Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...',924 k,3000-05-12,4000-05-12}\n" +
                 "aoy\n" +

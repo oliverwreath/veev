@@ -10,22 +10,29 @@ import java.util.List;
 @Slf4j
 public class Document {
     String name;
-    String description;
-    String createdBy;
+    String description;// (#2.3 format: max length 25, don't truncate any words unless the first word > 25, display "..." if truncated(these 3 do not count as part of 25))
+    String createdBy;// #1.1. Group by document.createdBy, sort ascending.
     String lastModifiedBy;
-    Long sizeInBytes;
-    Long createdTime;
-    Long modifiedTime;
+    Long sizeInBytes;// format to 50 mb, 900 k, 342 bytes
+    Long createdTime;// #1.2. sort ascending; (#2.2 format: yyyy-MM-dd)
+    Long modifiedTime;// (#2.2 format: yyyy-MM-dd)
 
+    public static void main(String[] args) {
+        System.out.println("Hello!");
+    }
 
     /**
      * Prints a report of the list of documents in the following format:
      * <p>
+     *     #1
      * Group by document.createdBy
      * Sort the groups using document.createdBy ascending, case insensitive
      * Sort each sub list of documents by document.createdTime ascending
+     * <p>
+     *     #2
      * Format the output of document.size to be a more friendly format. Ex.  50 mb, 900 k, 342 bytes, etc...
      * Format the dates using the format: yyyy-MM-dd
+     *       #2.3
      * Format the output of document.description such that
      * - no more than the first 25 characters of the description are displayed
      * - don't truncate any words unless the first word is longer than 25 characters

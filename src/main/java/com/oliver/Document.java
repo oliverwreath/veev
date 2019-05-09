@@ -71,7 +71,7 @@ public class Document {
                 '}';
     }
 
-    public String toStringBeautify() {
+    String toStringBeautify() {
         return "Document{" +
                 "'" + name + '\'' +
                 ",'" + formatDescription(description) + '\'' +
@@ -83,7 +83,7 @@ public class Document {
 
     protected static final String truncatedIndication = "...";
 
-    protected String formatDescription(String description) {
+    String formatDescription(String description) {
         // DON't truncate
         if (description.length() <= 25) {
             return description;
@@ -126,15 +126,15 @@ public class Document {
 
     static {
         sizeList = new LinkedList<>();
-//        sizeList.add(Pair.of(1208925819614629174706176L, "yb"));
-//        sizeList.add(Pair.of(1180591620717411303424L, "zb"));
-//        sizeList.add(Pair.of(1152921504606846976L, "eb"));
-        sizeList.add(Pair.of(1125899906842624L, "pb"));
-        sizeList.add(Pair.of(1099511627776L, "tb"));
-        sizeList.add(Pair.of(1073741824L, "gb"));
-        sizeList.add(Pair.of(1048576L, "mb"));
-        sizeList.add(Pair.of(1024L, "k"));
-        sizeList.add(Pair.of(1L, "bytes"));
+//        sizeList.add(Pair.of(1208925819614629174706176L, Sizes.yb.toString()));
+//        sizeList.add(Pair.of(1180591620717411303424L, Sizes.zb.toString()));
+//        sizeList.add(Pair.of(1152921504606846976L, Sizes.eb.toString()));
+        sizeList.add(Pair.of(1125899906842624L, Sizes.pb.toString()));
+        sizeList.add(Pair.of(1099511627776L, Sizes.tb.toString()));
+        sizeList.add(Pair.of(1073741824L, Sizes.gb.toString()));
+        sizeList.add(Pair.of(1048576L, Sizes.mb.toString()));
+        sizeList.add(Pair.of(1024L, Sizes.k.toString()));
+        sizeList.add(Pair.of(1L, Sizes.bytes.toString()));
     }
 
     String formatSize(Long sizeInBytes) {
@@ -154,13 +154,15 @@ public class Document {
         private static Map<String, Long> map4ParsingSize = new HashMap<>();
 
         static {
-            map4ParsingSize.put("bytes", 1L);
-            map4ParsingSize.put("k", 1024L);
-            map4ParsingSize.put("mb", 1048576L);
-            map4ParsingSize.put("gb", 1073741824L);
-            map4ParsingSize.put("tb", 1099511627776L);
-            map4ParsingSize.put("pb", 1125899906842624L);
-//            map4ParsingSize.put("eb", 1152921504606846976L);
+            map4ParsingSize.put(Sizes.bytes.toString(), 1L);
+            map4ParsingSize.put(Sizes.k.toString(), 1024L);
+            map4ParsingSize.put(Sizes.mb.toString(), 1048576L);
+            map4ParsingSize.put(Sizes.gb.toString(), 1073741824L);
+            map4ParsingSize.put(Sizes.tb.toString(), 1099511627776L);
+            map4ParsingSize.put(Sizes.pb.toString(), 1125899906842624L);
+//            map4ParsingSize.put(Sizes.eb.toString(), 1152921504606846976L);
+//        map4ParsingSize.put(Sizes.zb.toString(), 1180591620717411303424L);
+//        map4ParsingSize.put(Sizes.yb.toString(), 1208925819614629174706176L);
         }
 
         public DocumentFormatter(DateTimeFormatter formatterYYYYMMdd, ZoneOffset zoneOffsetToronto) {
@@ -199,8 +201,8 @@ public class Document {
         }
     }
 
-    public enum Sizes {
-        bytes, k, mb, gb, tb, pb, eb
+    enum Sizes {
+        bytes, k, mb, gb, tb, pb
     }
 
     /**

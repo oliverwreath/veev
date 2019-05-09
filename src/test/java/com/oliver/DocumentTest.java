@@ -10,6 +10,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static com.oliver.Document.Sizes;
 
 /**
  * Author: Oliver
@@ -27,15 +28,15 @@ public class DocumentTest {
         DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.CANADA);
         ZoneOffset zoneOffsetToronto = ZoneOffset.of("-05:00");
         Map<String, Long> map4ParsingSize = new HashMap<>();
-        map4ParsingSize.put("bytes", 1L);
-        map4ParsingSize.put("k", 1024L);
-        map4ParsingSize.put("mb", 1048576L);
-        map4ParsingSize.put("gb", 1073741824L);
-        map4ParsingSize.put("tb", 1099511627776L);
-        map4ParsingSize.put("pb", 1125899906842624L);
-        map4ParsingSize.put("eb", 1152921504606846976L);
-//        map4ParsingSize.put("zb", 1180591620717411303424L);
-//        map4ParsingSize.put("yb", 1208925819614629174706176L);
+        map4ParsingSize.put(Sizes.bytes.toString(), 1L);
+        map4ParsingSize.put(Sizes.k.toString(), 1024L);
+        map4ParsingSize.put(Sizes.mb.toString(), 1048576L);
+        map4ParsingSize.put(Sizes.gb.toString(), 1073741824L);
+        map4ParsingSize.put(Sizes.tb.toString(), 1099511627776L);
+        map4ParsingSize.put(Sizes.pb.toString(), 1125899906842624L);
+//        map4ParsingSize.put(Sizes.eb.toString(), 1152921504606846976L);
+//        map4ParsingSize.put(Sizes.zb.toString(), 1180591620717411303424L);
+//        map4ParsingSize.put(Sizes.yb.toString(), 1208925819614629174706176L);
         Document.DocumentFormatter documentFormatter = new Document.DocumentFormatter(formatterYYYYMMdd, zoneOffsetToronto, map4ParsingSize);
 
         // actual test data
@@ -73,15 +74,15 @@ public class DocumentTest {
         DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.CANADA);
         ZoneOffset zoneOffsetToronto = ZoneOffset.of("-05:00");
         Map<String, Long> map4ParsingSize = new HashMap<>();
-        map4ParsingSize.put("bytes", 1L);
-        map4ParsingSize.put("k", 1024L);
-        map4ParsingSize.put("mb", 1048576L);
-        map4ParsingSize.put("gb", 1073741824L);
-        map4ParsingSize.put("tb", 1099511627776L);
-        map4ParsingSize.put("pb", 1125899906842624L);
-        map4ParsingSize.put("eb", 1152921504606846976L);
-//        map4ParsingSize.put("zb", 1180591620717411303424L);
-//        map4ParsingSize.put("yb", 1208925819614629174706176L);
+        map4ParsingSize.put(Sizes.bytes.toString(), 1L);
+        map4ParsingSize.put(Sizes.k.toString(), 1024L);
+        map4ParsingSize.put(Sizes.mb.toString(), 1048576L);
+        map4ParsingSize.put(Sizes.gb.toString(), 1073741824L);
+        map4ParsingSize.put(Sizes.tb.toString(), 1099511627776L);
+        map4ParsingSize.put(Sizes.pb.toString(), 1125899906842624L);
+//        map4ParsingSize.put(Sizes.eb.toString(), 1152921504606846976L);
+//        map4ParsingSize.put(Sizes.zb.toString(), 1180591620717411303424L);
+//        map4ParsingSize.put(Sizes.yb.toString(), 1208925819614629174706176L);
         Document.DocumentFormatter documentFormatter = new Document.DocumentFormatter(formatterYYYYMMdd, zoneOffsetToronto, map4ParsingSize);
         Document document = new Document(documentFormatter, "Andy Andrews", "Bobby Timmons Biography", "TOO_LONG_Expect ..._Truncation An exhaustive look at the TOO_LONG_Expect ..._Truncation", "233 mb", "2013-05-09", "2013-05-14");
         Validate.isTrue(document.toStringBeautify().equals("Document{'Bobby Timmons Biography','TOO_LONG_Expect ..._Truncation...',233 mb,2013-05-09,2013-05-14}"));

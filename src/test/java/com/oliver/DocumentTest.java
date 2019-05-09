@@ -134,6 +134,9 @@ class DocumentTest {
         for (String oneDocument : listDocuments) {
             Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long(oneDocument)).equals(oneDocument));
         }
+        // corner cases
+        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long(null)).equals(""));
+        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("")).equals(""));
 
         // format time - parse back and forth should still equal
         List<String> listDateTime = new LinkedList<>(Arrays.asList("1900-01-01", "2013-01-01", "2013-05-09", "2013-05-10", "2013-05-12", "2019-03-03", "2099-12-31"));
@@ -142,6 +145,8 @@ class DocumentTest {
         }
         // corner cases
         Validate.isTrue(!document.formatTime(documentFormatter.parseDateTimeString2Long("2012-02-31")).equals("2012-02-31"));
+        Validate.isTrue(document.formatTime(documentFormatter.parseDateTimeString2Long(null)).equals(""));
+        Validate.isTrue(document.formatTime(documentFormatter.parseDateTimeString2Long("")).equals(""));
     }
 
     @AfterAll

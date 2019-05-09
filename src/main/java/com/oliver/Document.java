@@ -125,6 +125,12 @@ public class Document {
     }
 
     String formatTime(final Long timeToFormat, final String dateTimePattern) {
+        // Validate preconditions
+        Validate.notBlank(dateTimePattern);
+        if (timeToFormat == null) {
+            return "";
+        }
+
         SimpleDateFormat df2 = new SimpleDateFormat(dateTimePattern);
         String dateText = df2.format(new Date(timeToFormat));
         log.debug("formatTime: {} to {}", timeToFormat, dateText);
@@ -132,6 +138,11 @@ public class Document {
     }
 
     String formatTime(final Long timeToFormat) {
+        // Validate preconditions
+        if (timeToFormat == null) {
+            return "";
+        }
+
         SimpleDateFormat df2 = new SimpleDateFormat(DEFAULT_YYYYMMDD_PATTERN);
         String dateText = df2.format(new Date(timeToFormat));
         log.debug("formatTime: {} to {}", timeToFormat, dateText);
@@ -154,6 +165,11 @@ public class Document {
     }
 
     String formatSize(final Long sizeInBytes) {
+        // Validate preconditions
+        if (sizeInBytes == null) {
+            return "";
+        }
+
         for (Pair<Long, String> longStringPair : sizeList) {
             if (sizeInBytes > longStringPair.getLeft()) {
                 return sizeInBytes / longStringPair.getLeft() + " " + longStringPair.getRight();

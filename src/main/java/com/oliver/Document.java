@@ -234,10 +234,22 @@ public class Document {
      * @param documents not null
      */
     public void printDocumentsReport(List<Document> documents) {
+        log.info("Begin printDocumentsReport() -------------- ");
+        System.out.println(printDocumentsReportHelper(documents).toString());
+        log.info("End   printDocumentsReport() -------------- ");
+    }
+
+    /**
+     * that original function returns void which is NOT test friendly so here's a helper for quality assurance
+     *
+     * @param documents
+     */
+    public StringBuilder printDocumentsReportHelper(List<Document> documents) {
         // Validate preconditions
         Validate.notEmpty(documents);
 
-        log.info("\n\nprintDocumentsReport(): documents = {}\n", documents);
+        // prepare the map
+        log.debug("\n\nprintDocumentsReport(): documents = {}\n", documents);
         Map<String, List<Document>> mapString2Documents = new HashMap<>();
         for (Document document : documents) {
             String key = document.getCreatedBy();
@@ -247,12 +259,17 @@ public class Document {
             mapString2Documents.get(key).add(document);
         }
 
-        log.info("mapString2Documents.keySet().size() = {}", mapString2Documents.keySet().size());
+        // populate the stringBuilder
+        StringBuilder stringBuilder = new StringBuilder();
+        log.debug("mapString2Documents.keySet().size() = {}", mapString2Documents.keySet().size());
         for (String key : mapString2Documents.keySet()) {
-            log.info("key = {}; \nmapString2Documents.get(key).size() = {}", key, mapString2Documents.get(key).size());
+            log.debug("key = {}; \nmapString2Documents.get(key).size() = {}", key, mapString2Documents.get(key).size());
+            stringBuilder.append(key).append('\n');
             for (Document document : mapString2Documents.get(key)) {
-                log.info("document = {}", document);
+                log.debug("document = {}", document);
+                stringBuilder.append(document.toString()).append('\n');
             }
         }
+        return stringBuilder;
     }
 }

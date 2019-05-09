@@ -26,6 +26,15 @@ class DocumentTest {
     private static final String TOO_LONG_EXPECT_TRUNCATION_TRUNCATED = "TOO_LONG_Expect ..._Truncation...";
     private static final String TOO_LONG_BUT_DONT_CHOP_THE_WORD_TRUNCATED = "Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...";
     private static final String TOO_LONG_FIRST_WORD_CHOP_IT_TRUNCATED = "1st_WORD_Too_Long_Chop_It...";
+    // constants
+    static final String TIME_1300 = "1300-01-01";
+    static final String TIME_1501 = "1501-01-01";
+    static final String TIME_2000 = "2000-01-01";
+    static final String TIME_2002 = "2002-01-01";
+    static final String TIME_2100 = "2100-01-01";
+    static final String TIME_2202 = "2202-01-01";
+    static final String TIME_3000 = "3000-01-01";
+    static final String TIME_3003 = "3003-01-01";
 
     @BeforeAll
     static void setUp() {
@@ -56,32 +65,32 @@ class DocumentTest {
 
         // actual test data
         List<Document> lst = new LinkedList<>();
-        lst.add(new Document(documentFormatter, "Janet Smith", "Janet Xray", TOO_LONG_EXPECT_TRUNCATION, "48 mb", "2013-05-09", "2013-05-14"));
-        lst.add(new Document(documentFormatter, "Bobby Andrews", "Bobby Timmons Biography", TOO_LONG_EXPECT_TRUNCATION, "233 mb", "2000-05-09", "2013-05-14"));
-        lst.add(new Document(documentFormatter, "Zoo", "Zoo Sauce", SHORT_NO_TRUNCATION, "87 gb", "2019-05-10", "2013-05-10"));
-        lst.add(new Document(documentFormatter, "Janet Smith", "Janet Computers", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "423 bytes", "3000-03-01", "2013-02-17"));
-        lst.add(new Document(documentFormatter, "Andy Andrews", "Andy Sauce", SHORT_NO_TRUNCATION, "87 gb", "1000-05-10", "2013-05-10"));
-        lst.add(new Document(documentFormatter, "Boy", "Boy Sauce", SHORT_NO_TRUNCATION, "87 gb", "2000-05-10", "2013-05-10"));
-        lst.add(new Document(documentFormatter, "aoy", "aoy Sauce", TOO_LONG_FIRST_WORD_CHOP_IT, "87 gb", "2000-05-10", "2013-05-10"));
-        lst.add(new Document(documentFormatter, "Andy Andrews", "Andy Zed", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "924 k", "3000-05-12", "4000-05-12"));
+        lst.add(new Document(documentFormatter, "Janet Smith", "Janet Xray", TOO_LONG_EXPECT_TRUNCATION, "48 mb", TIME_2202, TIME_2202));
+        lst.add(new Document(documentFormatter, "Bobby Andrews", "Bobby Timmons Biography", TOO_LONG_EXPECT_TRUNCATION, "233 mb", TIME_2000, TIME_2002));
+        lst.add(new Document(documentFormatter, "Zoo", "Zoo Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_3000, TIME_3003));
+        lst.add(new Document(documentFormatter, "Janet Smith", "Janet Computers", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "423 bytes", TIME_2100, TIME_2100));
+        lst.add(new Document(documentFormatter, "Andy Andrews", "Andy Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_1501, TIME_1501));
+        lst.add(new Document(documentFormatter, "Boy", "Boy Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_1300, TIME_1300));
+        lst.add(new Document(documentFormatter, "aoy", "aoy Sauce", TOO_LONG_FIRST_WORD_CHOP_IT, "87 gb", TIME_1300, TIME_1300));
+        lst.add(new Document(documentFormatter, "Andy Andrews", "Andy Zed", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "924 k", TIME_1300, TIME_1300));
         log.debug("sizeList = {}", lst);
 
         // run the core function
         document.printDocumentsReport(lst);
         Validate.isTrue(document.printDocumentsReportHelper(lst).toString().equals("Andy Andrews\n" +
-                "Document{'Andy Sauce','SHORT_NO_TRUNCATION',87 gb,1000-05-04,2013-05-10}\n" +
-                "Document{'Andy Zed','Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...',924 k,3000-05-12,4000-05-12}\n" +
+                "Document{'Andy Zed','Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...',924 k,1299-12-25,1299-12-25}\n" +
+                "Document{'Andy Sauce','SHORT_NO_TRUNCATION',87 gb,1500-12-22,1500-12-22}\n" +
                 "aoy\n" +
-                "Document{'aoy Sauce','1st_WORD_Too_Long_Chop_It...',87 gb,2000-05-10,2013-05-10}\n" +
+                "Document{'aoy Sauce','1st_WORD_Too_Long_Chop_It...',87 gb,1299-12-25,1299-12-25}\n" +
                 "Bobby Andrews\n" +
-                "Document{'Bobby Timmons Biography','TOO_LONG_Expect ..._Truncation...',233 mb,2000-05-09,2013-05-14}\n" +
+                "Document{'Bobby Timmons Biography','TOO_LONG_Expect ..._Truncation...',233 mb,2000-01-01,2002-01-01}\n" +
                 "Boy\n" +
-                "Document{'Boy Sauce','SHORT_NO_TRUNCATION',87 gb,2000-05-10,2013-05-10}\n" +
+                "Document{'Boy Sauce','SHORT_NO_TRUNCATION',87 gb,1299-12-25,1299-12-25}\n" +
                 "Janet Smith\n" +
-                "Document{'Janet Xray','TOO_LONG_Expect ..._Truncation...',48 mb,2013-05-09,2013-05-14}\n" +
-                "Document{'Janet Computers','Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...',423 bytes,3000-03-01,2013-02-17}\n" +
+                "Document{'Janet Computers','Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...',423 bytes,2100-01-01,2100-01-01}\n" +
+                "Document{'Janet Xray','TOO_LONG_Expect ..._Truncation...',48 mb,2202-01-01,2202-01-01}\n" +
                 "Zoo\n" +
-                "Document{'Zoo Sauce','SHORT_NO_TRUNCATION',87 gb,2019-05-10,2013-05-10}\n"));
+                "Document{'Zoo Sauce','SHORT_NO_TRUNCATION',87 gb,3000-01-01,3003-01-01}\n"));
     }
 
     @Test

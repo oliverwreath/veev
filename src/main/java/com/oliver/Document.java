@@ -116,7 +116,7 @@ public class Document {
         }
     }
 
-    private String formatTime(Long timeToFormat) {
+    String formatTime(Long timeToFormat) {
         SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
         String dateText = df2.format(new Date(timeToFormat));
         log.debug("formatTime: {} to {}", timeToFormat, dateText);
@@ -179,7 +179,7 @@ public class Document {
             return LocalDateTime.of(LocalDate.parse(dateTimeString, formatter), LocalTime.of(0, 0)).toInstant(zoneOffset).toEpochMilli();
         }
 
-        private long parseDateTimeString2Long(String dateTimeString) {
+        long parseDateTimeString2Long(String dateTimeString) {
             return LocalDateTime.of(LocalDate.parse(dateTimeString, formatterYYYYMMdd), LocalTime.of(0, 0)).toInstant(zoneOffsetToronto).toEpochMilli();
         }
 

@@ -97,24 +97,17 @@ public class DocumentTest {
 
         // format size - parse back and forth should still equal
         Document.DocumentFormatter documentFormatter = new Document.DocumentFormatter();
-        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("233 mb")).equals("233 mb"));
-        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("87 gb")).equals("87 gb"));
-        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("924 k")).equals("924 k"));
-        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("48 mb")).equals("48 mb"));
-        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("423 bytes")).equals("423 bytes"));
-        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("233 tb")).equals("233 tb"));
-        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("233 pb")).equals("233 pb"));
+        List<String> listDocuments = new LinkedList<>(Arrays.asList("233 mb", "87 gb", "924 k", "48 mb", "423 bytes", "233 tb", "233 pb"));
+        for (String oneDocument : listDocuments) {
+            Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long(oneDocument)).equals(oneDocument));
+        }
 
-//        Document.DocumentFormatter documentFormatter = new Document.DocumentFormatter(formatterYYYYMMdd, zoneOffsetToronto, map4ParsingSize);
-//        Document document = new Document(documentFormatter, "Andy Andrews", "Bobby Timmons Biography", "TOO_LONG_Expect ..._Truncation An exhaustive look at the TOO_LONG_Expect ..._Truncation", "233 mb", "2013-05-09", "2013-05-14");
-//        Validate.isTrue(document.toString().equals("Document{'Andy Andrews','Bobby Timmons Biography','TOO_LONG_Expect ..._Truncation...',233 mb,2013-05-09,2013-05-14}"));
-//
-//        Document document2 = new Document(documentFormatter, "Boy Andrews", "Apple Sauce", "SHORT_NO_Truncation", "87 gb", "2013-05-10", "2013-05-10");
-//        Validate.isTrue(document2.toString().equals("Document{'Boy Andrews','Apple Sauce','SHORT_NO_Truncation',87 gb,2013-05-10,2013-05-10}"));
-//
-//        Document document3 = new Document(documentFormatter, "Cat Andrews", "Zed", "Last_WORD TOO_Long_keep_it_whole_right? these_will_not_show_since_too_long", "924 k", "2013-05-12", "2013-05-12");
-//        log.debug("document3.toString() = {}", document3.toString());
-//        Validate.isTrue(document3.toString().equals("Document{'Cat Andrews','Zed','Last_WORD TOO_Long_keep_it_whole_right?...',924 k,2013-05-12,2013-05-12}"));
+        // format time - parse back and forth should still equal
+        List<String> listDateTime = new LinkedList<>(Arrays.asList("2012-02-28", "2013-01-01", "2013-05-09", "2013-05-10", "2013-05-12", "2019-03-03"));
+        for (String oneDateTime : listDateTime) {
+            Validate.isTrue(document.formatTime(documentFormatter.parseDateTimeString2Long(oneDateTime)).equals(oneDateTime));
+        }
+        Validate.isTrue(!document.formatTime(documentFormatter.parseDateTimeString2Long("2012-02-31")).equals("2012-02-31"));
     }
 
     @AfterAll

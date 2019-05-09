@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -31,6 +32,10 @@ public class Document {
     Long sizeInBytes;// format to 50 mb, 900 k, 342 bytes
     Long createdTime;// #1.2. sort ascending; (#2.2 format: yyyy-MM-dd)
     Long modifiedTime;// (#2.2 format: yyyy-MM-dd)
+
+    static final String ZoneOffset_TORONTO = "-05:00";
+    static final String DEFAULT_YYYYMMDD_PATTERN = "yyyy-MM-dd";
+    static final String truncatedIndication = "...";
 
     /**
      * constructor
@@ -82,9 +87,12 @@ public class Document {
                 '}';
     }
 
-    protected static final String truncatedIndication = "...";
-
     String formatDescription(final String description) {
+        // Validate preconditions
+        if (StringUtils.isBlank(description)) {
+            return "";
+        }
+
         // DON't truncate
         if (description.length() <= 25) {
             return description;
@@ -116,8 +124,15 @@ public class Document {
         }
     }
 
+    String formatTime(final Long timeToFormat, final String dateTimePattern) {
+        SimpleDateFormat df2 = new SimpleDateFormat(dateTimePattern);
+        String dateText = df2.format(new Date(timeToFormat));
+        log.debug("formatTime: {} to {}", timeToFormat, dateText);
+        return dateText;
+    }
+
     String formatTime(final Long timeToFormat) {
-        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat df2 = new SimpleDateFormat(DEFAULT_YYYYMMDD_PATTERN);
         String dateText = df2.format(new Date(timeToFormat));
         log.debug("formatTime: {} to {}", timeToFormat, dateText);
         return dateText;
@@ -150,8 +165,8 @@ public class Document {
 
     @NoArgsConstructor
     protected static class DocumentFormatter {
-        private DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.CANADA);
-        private ZoneOffset zoneOffsetToronto = ZoneOffset.of("-05:00");
+        private DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern(DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA);
+        private ZoneOffset zoneOffsetToronto = ZoneOffset.of(ZoneOffset_TORONTO);
         private static Map<String, Long> map4ParsingSize = new HashMap<>();
 
         static {
@@ -177,12 +192,30 @@ public class Document {
             this.map4ParsingSize = map4ParsingSize;
         }
 
-        private long parseDateTimeString2Long(final String dateTimeString, final DateTimeFormatter formatter, final ZoneOffset zoneOffset) {
-            return LocalDateTime.of(LocalDate.parse(dateTimeString, formatter), LocalTime.of(0, 0)).toInstant(zoneOffset).toEpochMilli();
+        private Long parseDateTimeString2Long(final String dateTimeString, final DateTimeFormatter formatter, final ZoneOffset zoneOffset) {
+            // Validate preconditions
+            if (StringUtils.isBlank(dateTimeString)) {
+                return null;
+            }
+
+            try {
+                return LocalDateTime.of(LocalDate.parse(dateTimeString, formatter), LocalTime.of(0, 0)).toInstant(zoneOffset).toEpochMilli();
+            } catch (Exception e) {
+                return null;
+            }
         }
 
-        long parseDateTimeString2Long(final String dateTimeString) {
-            return LocalDateTime.of(LocalDate.parse(dateTimeString, formatterYYYYMMdd), LocalTime.of(0, 0)).toInstant(zoneOffsetToronto).toEpochMilli();
+        Long parseDateTimeString2Long(final String dateTimeString) {
+            // Validate preconditions
+            if (StringUtils.isBlank(dateTimeString)) {
+                return null;
+            }
+
+            try {
+                return LocalDateTime.of(LocalDate.parse(dateTimeString, formatterYYYYMMdd), LocalTime.of(0, 0)).toInstant(zoneOffsetToronto).toEpochMilli();
+            } catch (Exception e) {
+                return null;
+            }
         }
 
         /**
@@ -191,9 +224,12 @@ public class Document {
          * @param size
          * @return
          */
-        long parseSizeString2Long(final String size) {
+        Long parseSizeString2Long(final String size) {
             // Validate preconditions
-            Validate.notBlank(size);
+            if (StringUtils.isBlank(size)) {
+                return null;
+            }
+
             String[] s = size.trim().split(" ");
             Validate.isTrue(s.length == 2);
             Long resultLong = Long.valueOf(s[0]) * map4ParsingSize.get(s[1]);

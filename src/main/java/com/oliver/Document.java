@@ -84,28 +84,28 @@ public class Document {
 
     protected static final String truncatedIndication = "...";
 
-    private String formatDescription(String description) {
-        // NOT truncated
+    protected String formatDescription(String description) {
+        // DON't truncate
         if (description.length() <= 25) {
             return description;
         }
-        // IS truncated?
+        // DO truncate
         boolean isFirstWordTooLong = true;
         for (int i = 0; i < 25; i++) {
-            if (!Character.isAlphabetic(description.charAt(i))) {
+            if (' ' == description.charAt(i)) {
                 isFirstWordTooLong = false;
                 break;
             }
         }
 
         if (isFirstWordTooLong) {
-            // Still NOT truncated
-            return description;
+            // chop the word if necessary
+            return description.substring(0, 25) + truncatedIndication;
         } else {
-            // Now we MUST truncate and keep the last word.
+            // MUST truncate BUT don't chop last word.
             int endIndex = 25;
             while (endIndex < description.length()) {
-                if (' ' == (description.charAt(endIndex))) {
+                if (' ' == description.charAt(endIndex)) {
                     break;
                 }
                 endIndex++;
@@ -129,7 +129,7 @@ public class Document {
         sizeList = new LinkedList<>();
 //        sizeList.add(Pair.of(1208925819614629174706176L, "yb"));
 //        sizeList.add(Pair.of(1180591620717411303424L, "zb"));
-        sizeList.add(Pair.of(1152921504606846976L, "eb"));
+//        sizeList.add(Pair.of(1152921504606846976L, "eb"));
         sizeList.add(Pair.of(1125899906842624L, "pb"));
         sizeList.add(Pair.of(1099511627776L, "tb"));
         sizeList.add(Pair.of(1073741824L, "gb"));
@@ -138,7 +138,7 @@ public class Document {
         sizeList.add(Pair.of(1L, "bytes"));
     }
 
-    private String formatSize(Long sizeInBytes) {
+    String formatSize(Long sizeInBytes) {
         for (Pair<Long, String> longStringPair : sizeList) {
             if (sizeInBytes > longStringPair.getLeft()) {
                 return sizeInBytes / longStringPair.getLeft() + " " + longStringPair.getRight();
@@ -161,7 +161,7 @@ public class Document {
             map4ParsingSize.put("gb", 1073741824L);
             map4ParsingSize.put("tb", 1099511627776L);
             map4ParsingSize.put("pb", 1125899906842624L);
-            map4ParsingSize.put("eb", 1152921504606846976L);
+//            map4ParsingSize.put("eb", 1152921504606846976L);
         }
 
         public DocumentFormatter(DateTimeFormatter formatterYYYYMMdd, ZoneOffset zoneOffsetToronto) {
@@ -189,7 +189,7 @@ public class Document {
          * @param size
          * @return
          */
-        private long parseSizeString2Long(String size) {
+        long parseSizeString2Long(String size) {
             // Validate preconditions
             Validate.notBlank(size);
             String[] s = size.trim().split(" ");

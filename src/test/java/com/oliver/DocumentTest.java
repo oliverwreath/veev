@@ -85,6 +85,38 @@ public class DocumentTest {
         Validate.isTrue(document3.toString().equals("Document{'Cat Andrews','Zed','Last_WORD TOO_Long_keep_it_whole_right?...',924 k,2013-05-12,2013-05-12}"));
     }
 
+    @Test
+    void test_WhenCallFormatting_TheResultingStringsAsExpected() {
+        Document document = new Document();
+        // format description
+        Validate.isTrue(document.formatDescription("TOO_LONG_Expect ..._Truncation An exhaustive look at the TOO_LONG_Expect ..._Truncation").equals("TOO_LONG_Expect ..._Truncation..."));
+        Validate.isTrue(document.formatDescription("Last_WORD Too_Long_keep_it_whole_right? these_will_not_show_since_too_long").equals("Last_WORD Too_Long_keep_it_whole_right?..."));
+        Validate.isTrue(document.formatDescription("1st_WORD_Too_Long_Chop_It_TAIL_lost!").equals("1st_WORD_Too_Long_Chop_It..."));
+        System.out.println(document.formatDescription("SHORT_NO_Truncation"));
+        Validate.isTrue(document.formatDescription("SHORT_NO_Truncation").equals("SHORT_NO_Truncation"));
+
+        // format size - parse back and forth should still equal
+        Document.DocumentFormatter documentFormatter = new Document.DocumentFormatter();
+        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("233 mb")).equals("233 mb"));
+        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("87 gb")).equals("87 gb"));
+        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("924 k")).equals("924 k"));
+        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("48 mb")).equals("48 mb"));
+        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("423 bytes")).equals("423 bytes"));
+        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("233 tb")).equals("233 tb"));
+        Validate.isTrue(document.formatSize(documentFormatter.parseSizeString2Long("233 pb")).equals("233 pb"));
+
+//        Document.DocumentFormatter documentFormatter = new Document.DocumentFormatter(formatterYYYYMMdd, zoneOffsetToronto, map4ParsingSize);
+//        Document document = new Document(documentFormatter, "Andy Andrews", "Bobby Timmons Biography", "TOO_LONG_Expect ..._Truncation An exhaustive look at the TOO_LONG_Expect ..._Truncation", "233 mb", "2013-05-09", "2013-05-14");
+//        Validate.isTrue(document.toString().equals("Document{'Andy Andrews','Bobby Timmons Biography','TOO_LONG_Expect ..._Truncation...',233 mb,2013-05-09,2013-05-14}"));
+//
+//        Document document2 = new Document(documentFormatter, "Boy Andrews", "Apple Sauce", "SHORT_NO_Truncation", "87 gb", "2013-05-10", "2013-05-10");
+//        Validate.isTrue(document2.toString().equals("Document{'Boy Andrews','Apple Sauce','SHORT_NO_Truncation',87 gb,2013-05-10,2013-05-10}"));
+//
+//        Document document3 = new Document(documentFormatter, "Cat Andrews", "Zed", "Last_WORD TOO_Long_keep_it_whole_right? these_will_not_show_since_too_long", "924 k", "2013-05-12", "2013-05-12");
+//        log.debug("document3.toString() = {}", document3.toString());
+//        Validate.isTrue(document3.toString().equals("Document{'Cat Andrews','Zed','Last_WORD TOO_Long_keep_it_whole_right?...',924 k,2013-05-12,2013-05-12}"));
+    }
+
     @AfterAll
     static void cleanUp() {
         log.info("Test End!\n");

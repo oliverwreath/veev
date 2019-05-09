@@ -200,45 +200,6 @@ public class Document {
         }
     }
 
-    @Deprecated
-    public static void main(String[] args) {
-        Document document = new Document();
-        document.test();
-    }
-
-    @Deprecated
-    private void test() {
-        System.out.println("Begin ---------------------- !\n");
-        // prepare the formatter first
-        DateTimeFormatter formatterYYYYMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.CANADA);
-        ZoneOffset zoneOffsetToronto = ZoneOffset.of("-05:00");
-        Map<String, Long> map4ParsingSize = new HashMap<>();
-        map4ParsingSize.put("bytes", 1L);
-        map4ParsingSize.put("k", 1024L);
-        map4ParsingSize.put("mb", 1048576L);
-        map4ParsingSize.put("gb", 1073741824L);
-        map4ParsingSize.put("tb", 1099511627776L);
-        map4ParsingSize.put("pb", 1125899906842624L);
-        map4ParsingSize.put("eb", 1152921504606846976L);
-//        map4ParsingSize.put("zb", 1180591620717411303424L);
-//        map4ParsingSize.put("yb", 1208925819614629174706176L);
-        DocumentFormatter documentFormatter = new DocumentFormatter(formatterYYYYMMdd, zoneOffsetToronto, map4ParsingSize);
-        log.debug("new document = {}", new Document(documentFormatter, "Andy Andrews", "Bobby Timmons Biography", "TOO_LONG_Expect ..._Truncation An exhaustive look at the TOO_LONG_Expect ..._Truncation", "233 mb", "2013-05-09", "2013-05-14"));
-
-        // actual test data
-        List<Document> lst = new LinkedList<>();
-        lst.add(new Document(documentFormatter, "Andy Andrews", "Bobby Timmons Biography", "TOO_LONG_Expect ..._Truncation An exhaustive look at the TOO_LONG_Expect ..._Truncation", "233 mb", "2013-05-09", "2013-05-14"));
-        lst.add(new Document(documentFormatter, "Andy Andrews", "Apple Sauce", "Study of apple sauces.", "87 gb", "2013-05-10", "2013-05-10"));
-        lst.add(new Document(documentFormatter, "Andy Andrews", "Zed", "All matters, A to Zed", "924 k", "2013-05-12", "2013-05-12"));
-        lst.add(new Document(documentFormatter, "Janet Smith", "Xray", "TOO_LONG_Expect ..._Truncation How the Xray shows your TOO_LONG_Expect ..._Truncation", "48 mb", "2013-05-09", "2013-05-14"));
-        lst.add(new Document(documentFormatter, "Janet Smith", "Computers", "TOO_LONG_Expect ..._Truncation Inventory list of TOO_LONG_Expect ..._Truncation", "423 bytes", "2013-03-01", "2013-02-17"));
-        log.debug("sizeList = {}", lst);
-
-        // run the core function
-        printDocumentsReport(lst);
-        System.out.println("\nEnd ------------------------ !");
-    }
-
     public enum Sizes {
         bytes, k, mb, gb, tb, pb, eb
     }

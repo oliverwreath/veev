@@ -41,7 +41,7 @@ public class Document {
      * @param createdTime
      * @param modifiedTime
      */
-    public Document(String createdBy, String name, String description, Long sizeInBytes, Long createdTime, Long modifiedTime) {
+    public Document(final String createdBy, final String name, final String description, final Long sizeInBytes, final Long createdTime, final Long modifiedTime) {
         this.createdBy = createdBy;
         this.name = name;
         this.description = description;
@@ -50,7 +50,7 @@ public class Document {
         this.modifiedTime = modifiedTime;
     }
 
-    public Document(DocumentFormatter documentFormatter, String createdBy, String name, String description, String sizeString, String createdTime, String modifiedTime) {
+    public Document(final DocumentFormatter documentFormatter, final String createdBy, final String name, final String description, final String sizeString, final String createdTime, final String modifiedTime) {
         this.createdBy = createdBy;
         this.name = name;
         this.description = description;
@@ -83,7 +83,7 @@ public class Document {
 
     protected static final String truncatedIndication = "...";
 
-    String formatDescription(String description) {
+    String formatDescription(final String description) {
         // DON't truncate
         if (description.length() <= 25) {
             return description;
@@ -115,7 +115,7 @@ public class Document {
         }
     }
 
-    String formatTime(Long timeToFormat) {
+    String formatTime(final Long timeToFormat) {
         SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
         String dateText = df2.format(new Date(timeToFormat));
         log.debug("formatTime: {} to {}", timeToFormat, dateText);
@@ -137,7 +137,7 @@ public class Document {
         sizeList.add(Pair.of(1L, Sizes.bytes.toString()));
     }
 
-    String formatSize(Long sizeInBytes) {
+    String formatSize(final Long sizeInBytes) {
         for (Pair<Long, String> longStringPair : sizeList) {
             if (sizeInBytes > longStringPair.getLeft()) {
                 return sizeInBytes / longStringPair.getLeft() + " " + longStringPair.getRight();
@@ -165,22 +165,22 @@ public class Document {
 //        map4ParsingSize.put(Sizes.yb.toString(), 1208925819614629174706176L);
         }
 
-        public DocumentFormatter(DateTimeFormatter formatterYYYYMMdd, ZoneOffset zoneOffsetToronto) {
+        public DocumentFormatter(final DateTimeFormatter formatterYYYYMMdd, final ZoneOffset zoneOffsetToronto) {
             this.formatterYYYYMMdd = formatterYYYYMMdd;
             this.zoneOffsetToronto = zoneOffsetToronto;
         }
 
-        public DocumentFormatter(DateTimeFormatter formatterYYYYMMdd, ZoneOffset zoneOffsetToronto, Map<String, Long> map4ParsingSize) {
+        public DocumentFormatter(final DateTimeFormatter formatterYYYYMMdd, final ZoneOffset zoneOffsetToronto, final Map<String, Long> map4ParsingSize) {
             this.formatterYYYYMMdd = formatterYYYYMMdd;
             this.zoneOffsetToronto = zoneOffsetToronto;
             this.map4ParsingSize = map4ParsingSize;
         }
 
-        private long parseDateTimeString2Long(String dateTimeString, DateTimeFormatter formatter, ZoneOffset zoneOffset) {
+        private long parseDateTimeString2Long(final String dateTimeString, final DateTimeFormatter formatter, final ZoneOffset zoneOffset) {
             return LocalDateTime.of(LocalDate.parse(dateTimeString, formatter), LocalTime.of(0, 0)).toInstant(zoneOffset).toEpochMilli();
         }
 
-        long parseDateTimeString2Long(String dateTimeString) {
+        long parseDateTimeString2Long(final String dateTimeString) {
             return LocalDateTime.of(LocalDate.parse(dateTimeString, formatterYYYYMMdd), LocalTime.of(0, 0)).toInstant(zoneOffsetToronto).toEpochMilli();
         }
 
@@ -190,7 +190,7 @@ public class Document {
          * @param size
          * @return
          */
-        long parseSizeString2Long(String size) {
+        long parseSizeString2Long(final String size) {
             // Validate preconditions
             Validate.notBlank(size);
             String[] s = size.trim().split(" ");
@@ -236,7 +236,7 @@ public class Document {
      *
      * @param documents not null
      */
-    public void printDocumentsReport(List<Document> documents) {
+    public void printDocumentsReport(final List<Document> documents) {
         log.info("Begin printDocumentsReport() -------------- ");
         System.out.println(printDocumentsReportHelper(documents).toString());
         log.info("End   printDocumentsReport() -------------- ");
@@ -247,7 +247,7 @@ public class Document {
      *
      * @param documents
      */
-    public StringBuilder printDocumentsReportHelper(List<Document> documents) {
+    public StringBuilder printDocumentsReportHelper(final List<Document> documents) {
         // Validate preconditions
         Validate.notEmpty(documents);
 

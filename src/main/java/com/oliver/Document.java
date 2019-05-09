@@ -200,11 +200,13 @@ public class Document {
         }
     }
 
+    @Deprecated
     public static void main(String[] args) {
         Document document = new Document();
         document.test();
     }
 
+    @Deprecated
     private void test() {
         System.out.println("Begin ---------------------- !\n");
         // prepare the formatter first

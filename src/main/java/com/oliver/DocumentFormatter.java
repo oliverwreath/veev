@@ -42,6 +42,10 @@ class DocumentFormatter {
 //        map4ParsingSize.put(Sizes.yb.toString(), 1208925819614629174706176L);
     }
 
+    public DocumentFormatter(ZoneId zoneId) {
+        this.zoneId = zoneId;
+    }
+
     public DocumentFormatter(final DateTimeFormatter dateTimeFormatter, final ZoneId zoneId) {
         this.dateTimeFormatter = dateTimeFormatter;
         this.zoneId = zoneId;

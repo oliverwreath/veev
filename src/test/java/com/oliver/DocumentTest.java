@@ -47,9 +47,6 @@ class DocumentTest {
         Validate.isTrue(document.printDocumentsReportHelper(new LinkedList<>()).toString().equals(""));
 
         // prepare the formatter first
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DocumentFormatter.DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA).withZone(ZoneId.of(DEFAULT_ZoneId_TORONTO));
-//        ZoneOffset zoneOffsetToronto = ZoneOffset.of(DocumentFormatter.DEFAULT_ZoneOffset_TORONTO);
-//        DocumentFormatter documentFormatter = new DocumentFormatter(dateTimeFormatter, zoneOffsetToronto);
         DocumentFormatter documentFormatter = new DocumentFormatter();
 
         // actual test data
@@ -84,9 +81,6 @@ class DocumentTest {
 
     @Test
     void test_WhenCreatingOneDocument_TheContentsAreAsExpected() {
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DocumentFormatter.DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA).withZone(ZoneId.of(DEFAULT_ZoneId_TORONTO));
-//        ZoneOffset zoneOffsetToronto = ZoneOffset.of(DocumentFormatter.DEFAULT_ZoneOffset_TORONTO);
-//        DocumentFormatter documentFormatter = new DocumentFormatter(dateTimeFormatter, zoneOffsetToronto);
         DocumentFormatter documentFormatter = new DocumentFormatter();
         Document document = new Document(documentFormatter, "Andy Andrews", "Bobby Timmons Biography", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "233 mb", TIME_1300, TIME_1300);
         Validate.isTrue(document.toStringBeautify().equals("Document{'Bobby Timmons Biography','" + TOO_LONG_BUT_DONT_CHOP_THE_WORD_TRUNCATED + "',233 mb," + TIME_1300 + "," + TIME_1300 + "}"));
@@ -101,7 +95,6 @@ class DocumentTest {
 
     @Test
     void test_WhenFormatDescription_TheTruncatedAsExpected() {
-        Document document = new Document();
         // corner cases
         Validate.isTrue(DocumentFormatter.formatDescription(null).equals(""));
         Validate.isTrue(DocumentFormatter.formatDescription("").equals(""));
@@ -115,7 +108,6 @@ class DocumentTest {
 
     @Test
     void test_WhenFormatSizeAndTime_TheResultsAsExpected() {
-        Document document = new Document();
         // format size - parse back and forth should still equal
         DocumentFormatter documentFormatter = new DocumentFormatter();
         List<String> listDocuments = new LinkedList<>(Arrays.asList("423 bytes", "924 k", "233 mb", "48 mb", "87 gb", "233 tb", "233 pb"));

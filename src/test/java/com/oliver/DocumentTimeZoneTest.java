@@ -19,7 +19,6 @@ import static com.oliver.DocumentTest.*;
 @Slf4j
 class DocumentTimeZoneTest {
     // constants
-    private static final String MMDDYYYY_PATTERN = "MM-dd/yyyy";
     private static final ZoneId myZoneId = ZoneId.of("America/Toronto");
 
     @BeforeAll
@@ -35,10 +34,7 @@ class DocumentTimeZoneTest {
         Validate.isTrue(document.printDocumentsReportHelper(new LinkedList<>()).toString().equals(""));
 
         // prepare the formatter first
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DocumentFormatter.DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA).withZone(ZoneId.of(DEFAULT_ZoneId_TORONTO));
-//        ZoneOffset zoneOffsetToronto = ZoneOffset.of(DocumentFormatter.DEFAULT_ZoneOffset_TORONTO);
-//        DocumentFormatter documentFormatter = new DocumentFormatter(dateTimeFormatter, zoneOffsetToronto);
-        DocumentFormatter documentFormatter = new DocumentFormatter();
+        DocumentFormatter documentFormatter = new DocumentFormatter(myZoneId);
 
         // actual test data
         List<Document> lst = new LinkedList<>();
@@ -72,10 +68,7 @@ class DocumentTimeZoneTest {
 
     @Test
     void test_WhenCreatingOneDocument_TheContentsAreAsExpected() {
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DocumentFormatter.DEFAULT_YYYYMMDD_PATTERN, Locale.CANADA).withZone(ZoneId.of(DEFAULT_ZoneId_TORONTO));
-//        ZoneOffset zoneOffsetToronto = ZoneOffset.of(DocumentFormatter.DEFAULT_ZoneOffset_TORONTO);
-//        DocumentFormatter documentFormatter = new DocumentFormatter(dateTimeFormatter, zoneOffsetToronto);
-        DocumentFormatter documentFormatter = new DocumentFormatter();
+        DocumentFormatter documentFormatter = new DocumentFormatter(myZoneId);
         Document document = new Document(documentFormatter, "Andy Andrews", "Bobby Timmons Biography", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "233 mb", TIME_1300, TIME_1300);
         Validate.isTrue(document.toStringBeautify().equals("Document{'Bobby Timmons Biography','" + TOO_LONG_BUT_DONT_CHOP_THE_WORD_TRUNCATED + "',233 mb," + TIME_1300 + "," + TIME_1300 + "}"));
 
@@ -88,24 +81,9 @@ class DocumentTimeZoneTest {
     }
 
     @Test
-    void test_WhenFormatDescription_TheTruncatedAsExpected() {
-        Document document = new Document();
-        // corner cases
-        Validate.isTrue(DocumentFormatter.formatDescription(null).equals(""));
-        Validate.isTrue(DocumentFormatter.formatDescription("").equals(""));
-
-        // format description
-        Validate.isTrue(DocumentFormatter.formatDescription(TOO_LONG_EXPECT_TRUNCATION).equals(TOO_LONG_EXPECT_TRUNCATION_TRUNCATED));
-        Validate.isTrue(DocumentFormatter.formatDescription(TOO_LONG_BUT_DONT_CHOP_THE_WORD).equals(TOO_LONG_BUT_DONT_CHOP_THE_WORD_TRUNCATED));
-        Validate.isTrue(DocumentFormatter.formatDescription(TOO_LONG_FIRST_WORD_CHOP_IT).equals(TOO_LONG_FIRST_WORD_CHOP_IT_TRUNCATED));
-        Validate.isTrue(DocumentFormatter.formatDescription(SHORT_NO_TRUNCATION).equals(SHORT_NO_TRUNCATION));
-    }
-
-    @Test
     void test_WhenFormatSizeAndTime_TheResultsAsExpected() {
-        Document document = new Document();
         // format size - parse back and forth should still equal
-        DocumentFormatter documentFormatter = new DocumentFormatter();
+        DocumentFormatter documentFormatter = new DocumentFormatter(myZoneId);
         List<String> listDocuments = new LinkedList<>(Arrays.asList("423 bytes", "924 k", "233 mb", "48 mb", "87 gb", "233 tb", "233 pb"));
         for (String oneDocument : listDocuments) {
             Validate.isTrue(DocumentFormatter.formatSize(DocumentFormatter.parseSize(oneDocument)).equals(oneDocument));

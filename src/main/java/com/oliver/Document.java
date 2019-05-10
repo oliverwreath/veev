@@ -83,10 +83,6 @@ public class Document {
                 '}';
     }
 
-    enum Sizes {
-        bytes, k, mb, gb, tb, pb
-    }
-
     /**
      * Prints a report of the list of documents in the following format:
      * <p>

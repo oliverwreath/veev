@@ -11,7 +11,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static com.oliver.Document.Sizes;
+import static com.oliver.EnumUtils.Sizes;
 
 /**
  * Author: Oliver
@@ -96,13 +96,13 @@ class DocumentFormatter {
         Validate.isTrue(s.length == 2);
         Long resultLong = Long.valueOf(s[0]) * map4ParsingSize.get(s[1]);
         Validate.notNull(resultLong);
-        return resultLong.longValue();
+        return resultLong;
     }
 
     // above are formatters for setting values
     // below are formatters for printing values
     // constants
-    static final String truncatedIndication = "...";
+    private static final String truncatedIndication = "...";
     private static final List<Pair<Long, String>> sizeList;
 
     static {

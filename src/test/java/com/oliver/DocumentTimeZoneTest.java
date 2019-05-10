@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +20,18 @@ import static com.oliver.DocumentTest.*;
 @Slf4j
 class DocumentTimeZoneTest {
     // constants
-    private static final ZoneId myZoneId = ZoneId.of("America/Toronto");
+    private static List<ZoneId> zoneIDList = new ArrayList<>();
+
+    static {
+        zoneIDList.add(ZoneId.of("Asia/Tokyo"));
+        zoneIDList.add(ZoneId.of("Europe/Berlin"));
+        zoneIDList.add(ZoneId.of("Australia/Sydney"));
+        zoneIDList.add(ZoneId.of("Europe/London"));
+        zoneIDList.add(ZoneId.of("Antarctica/South_Pole"));
+        zoneIDList.add(ZoneId.of("Arctic/Longyearbyen"));
+        zoneIDList.add(ZoneId.of("Etc/GMT-14"));
+        zoneIDList.add(ZoneId.of("US/Hawaii"));
+    }
 
     @BeforeAll
     static void setUp() {
@@ -28,79 +40,86 @@ class DocumentTimeZoneTest {
 
     @Test
     void test_WhenPrintDocumentsReportHelper_TheContentsAreAsExpected() {
-        Document document = new Document();
-        // corner cases
-        Validate.isTrue(document.printDocumentsReportHelper(null).toString().equals(""));
-        Validate.isTrue(document.printDocumentsReportHelper(new LinkedList<>()).toString().equals(""));
+        for (ZoneId myZoneId : zoneIDList) {
+            System.out.println(myZoneId);
+            Document document = new Document();
+            // corner cases
+            Validate.isTrue(document.printDocumentsReportHelper(null).toString().equals(""));
+            Validate.isTrue(document.printDocumentsReportHelper(new LinkedList<>()).toString().equals(""));
 
-        // prepare the formatter first
-        DocumentFormatter documentFormatter = new DocumentFormatter(myZoneId);
+            // prepare the formatter first
+            DocumentFormatter documentFormatter = new DocumentFormatter(myZoneId);
 
-        // actual test data
-        List<Document> lst = new LinkedList<>();
-        lst.add(new Document(documentFormatter, "Janet Smith", "Janet Xray", TOO_LONG_EXPECT_TRUNCATION, "48 mb", TIME_2202, TIME_2202));
-        lst.add(new Document(documentFormatter, "Bobby Andrews", "Bobby Timmons Biography", TOO_LONG_EXPECT_TRUNCATION, "233 mb", TIME_2000, TIME_2002));
-        lst.add(new Document(documentFormatter, "Zoo", "Zoo Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_3000, TIME_3003));
-        lst.add(new Document(documentFormatter, "Janet Smith", "Janet Computers", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "423 bytes", TIME_2100, TIME_2100));
-        lst.add(new Document(documentFormatter, "Andy Andrews", "Andy Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_1501, TIME_1501));
-        lst.add(new Document(documentFormatter, "Boy", "Boy Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_1300, TIME_1300));
-        lst.add(new Document(documentFormatter, "aoy", "aoy Sauce", TOO_LONG_FIRST_WORD_CHOP_IT, "87 gb", TIME_1300, TIME_1300));
-        lst.add(new Document(documentFormatter, "Andy Andrews", "Andy Zed", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "924 k", TIME_1300, TIME_1300));
-        log.debug("sizeList = {}", lst);
+            // actual test data
+            List<Document> lst = new LinkedList<>();
+            lst.add(new Document(documentFormatter, "Janet Smith", "Janet Xray", TOO_LONG_EXPECT_TRUNCATION, "48 mb", TIME_2202, TIME_2202));
+            lst.add(new Document(documentFormatter, "Bobby Andrews", "Bobby Timmons Biography", TOO_LONG_EXPECT_TRUNCATION, "233 mb", TIME_2000, TIME_2002));
+            lst.add(new Document(documentFormatter, "Zoo", "Zoo Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_3000, TIME_3003));
+            lst.add(new Document(documentFormatter, "Janet Smith", "Janet Computers", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "423 bytes", TIME_2100, TIME_2100));
+            lst.add(new Document(documentFormatter, "Andy Andrews", "Andy Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_1501, TIME_1501));
+            lst.add(new Document(documentFormatter, "Boy", "Boy Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_1300, TIME_1300));
+            lst.add(new Document(documentFormatter, "aoy", "aoy Sauce", TOO_LONG_FIRST_WORD_CHOP_IT, "87 gb", TIME_1300, TIME_1300));
+            lst.add(new Document(documentFormatter, "Andy Andrews", "Andy Zed", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "924 k", TIME_1300, TIME_1300));
+            log.debug("sizeList = {}", lst);
 
-        // run the core function
-        document.printDocumentsReport(lst);
-        Validate.isTrue(document.printDocumentsReportHelper(lst).toString().equals("Andy Andrews\n" +
-                "Document{'Andy Zed','Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...',924 k,1300-01-01,1300-01-01}\n" +
-                "Document{'Andy Sauce','SHORT_NO_TRUNCATION',87 gb,1501-01-01,1501-01-01}\n" +
-                "aoy\n" +
-                "Document{'aoy Sauce','1st_WORD_Too_Long_Chop_It...',87 gb,1300-01-01,1300-01-01}\n" +
-                "Bobby Andrews\n" +
-                "Document{'Bobby Timmons Biography','TOO_LONG_Expect ..._Truncation...',233 mb,2000-01-01,2002-01-01}\n" +
-                "Boy\n" +
-                "Document{'Boy Sauce','SHORT_NO_TRUNCATION',87 gb,1300-01-01,1300-01-01}\n" +
-                "Janet Smith\n" +
-                "Document{'Janet Computers','Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...',423 bytes,2100-01-01,2100-01-01}\n" +
-                "Document{'Janet Xray','TOO_LONG_Expect ..._Truncation...',48 mb,2202-01-01,2202-01-01}\n" +
-                "Zoo\n" +
-                "Document{'Zoo Sauce','SHORT_NO_TRUNCATION',87 gb,3000-01-01,3003-01-01}\n"));
+            // run the core function
+            document.printDocumentsReport(lst);
+            Validate.isTrue(document.printDocumentsReportHelper(lst).toString().equals("Andy Andrews\n" +
+                    "Document{'Andy Zed','Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...',924 k,1300-01-01,1300-01-01}\n" +
+                    "Document{'Andy Sauce','SHORT_NO_TRUNCATION',87 gb,1501-01-01,1501-01-01}\n" +
+                    "aoy\n" +
+                    "Document{'aoy Sauce','1st_WORD_Too_Long_Chop_It...',87 gb,1300-01-01,1300-01-01}\n" +
+                    "Bobby Andrews\n" +
+                    "Document{'Bobby Timmons Biography','TOO_LONG_Expect ..._Truncation...',233 mb,2000-01-01,2002-01-01}\n" +
+                    "Boy\n" +
+                    "Document{'Boy Sauce','SHORT_NO_TRUNCATION',87 gb,1300-01-01,1300-01-01}\n" +
+                    "Janet Smith\n" +
+                    "Document{'Janet Computers','Last_WORD TOO_Long_BUT_Don't_Chop_keep_it_whole_right?...',423 bytes,2100-01-01,2100-01-01}\n" +
+                    "Document{'Janet Xray','TOO_LONG_Expect ..._Truncation...',48 mb,2202-01-01,2202-01-01}\n" +
+                    "Zoo\n" +
+                    "Document{'Zoo Sauce','SHORT_NO_TRUNCATION',87 gb,3000-01-01,3003-01-01}\n"));
+        }
     }
 
     @Test
     void test_WhenCreatingOneDocument_TheContentsAreAsExpected() {
-        DocumentFormatter documentFormatter = new DocumentFormatter(myZoneId);
-        Document document = new Document(documentFormatter, "Andy Andrews", "Bobby Timmons Biography", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "233 mb", TIME_1300, TIME_1300);
-        Validate.isTrue(document.toStringBeautify().equals("Document{'Bobby Timmons Biography','" + TOO_LONG_BUT_DONT_CHOP_THE_WORD_TRUNCATED + "',233 mb," + TIME_1300 + "," + TIME_1300 + "}"));
+        for (ZoneId myZoneId : zoneIDList) {
+            DocumentFormatter documentFormatter = new DocumentFormatter(myZoneId);
+            Document document = new Document(documentFormatter, "Andy Andrews", "Bobby Timmons Biography", TOO_LONG_BUT_DONT_CHOP_THE_WORD, "233 mb", TIME_1300, TIME_1300);
+            Validate.isTrue(document.toStringBeautify().equals("Document{'Bobby Timmons Biography','" + TOO_LONG_BUT_DONT_CHOP_THE_WORD_TRUNCATED + "',233 mb," + TIME_1300 + "," + TIME_1300 + "}"));
 
-        Document document2 = new Document(documentFormatter, "Boy Andrews", "Apple Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_1501, TIME_1501);
-        Validate.isTrue(document2.toStringBeautify().equals("Document{'Apple Sauce','" + SHORT_NO_TRUNCATION + "',87 gb," + TIME_1501 + "," + TIME_1501 + "}"));
+            Document document2 = new Document(documentFormatter, "Boy Andrews", "Apple Sauce", SHORT_NO_TRUNCATION, "87 gb", TIME_1501, TIME_1501);
+            Validate.isTrue(document2.toStringBeautify().equals("Document{'Apple Sauce','" + SHORT_NO_TRUNCATION + "',87 gb," + TIME_1501 + "," + TIME_1501 + "}"));
 
-        Document document3 = new Document(documentFormatter, "Cat Andrews", "Zed", TOO_LONG_FIRST_WORD_CHOP_IT, "924 k", TIME_2202, TIME_2202);
-        log.debug("document3.toString() = {}", document3.toString());
-        Validate.isTrue(document3.toStringBeautify().equals("Document{'Zed','" + TOO_LONG_FIRST_WORD_CHOP_IT_TRUNCATED + "',924 k," + TIME_2202 + "," + TIME_2202 + "}"));
+            Document document3 = new Document(documentFormatter, "Cat Andrews", "Zed", TOO_LONG_FIRST_WORD_CHOP_IT, "924 k", TIME_2202, TIME_2202);
+            log.debug("document3.toString() = {}", document3.toString());
+            Validate.isTrue(document3.toStringBeautify().equals("Document{'Zed','" + TOO_LONG_FIRST_WORD_CHOP_IT_TRUNCATED + "',924 k," + TIME_2202 + "," + TIME_2202 + "}"));
+        }
     }
 
     @Test
     void test_WhenFormatSizeAndTime_TheResultsAsExpected() {
-        // format size - parse back and forth should still equal
-        DocumentFormatter documentFormatter = new DocumentFormatter(myZoneId);
-        List<String> listDocuments = new LinkedList<>(Arrays.asList("423 bytes", "924 k", "233 mb", "48 mb", "87 gb", "233 tb", "233 pb"));
-        for (String oneDocument : listDocuments) {
-            Validate.isTrue(DocumentFormatter.formatSize(DocumentFormatter.parseSize(oneDocument)).equals(oneDocument));
-        }
-        // corner cases
-        Validate.isTrue(DocumentFormatter.formatSize(DocumentFormatter.parseSize(null)).equals(""));
-        Validate.isTrue(DocumentFormatter.formatSize(DocumentFormatter.parseSize("")).equals(""));
+        for (ZoneId myZoneId : zoneIDList) {
+            // format size - parse back and forth should still equal
+            DocumentFormatter documentFormatter = new DocumentFormatter(myZoneId);
+            List<String> listDocuments = new LinkedList<>(Arrays.asList("423 bytes", "924 k", "233 mb", "48 mb", "87 gb", "233 tb", "233 pb"));
+            for (String oneDocument : listDocuments) {
+                Validate.isTrue(DocumentFormatter.formatSize(DocumentFormatter.parseSize(oneDocument)).equals(oneDocument));
+            }
+            // corner cases
+            Validate.isTrue(DocumentFormatter.formatSize(DocumentFormatter.parseSize(null)).equals(""));
+            Validate.isTrue(DocumentFormatter.formatSize(DocumentFormatter.parseSize("")).equals(""));
 
-        // format time - parse back and forth should still equal
-        List<String> listDateTime = new LinkedList<>(Arrays.asList("1900-01-01", "2013-01-01", "2013-05-09", "2013-05-10", "2013-05-12", "2019-03-03", "2099-12-31"));
-        for (String oneDateTime : listDateTime) {
-            Validate.isTrue(documentFormatter.formatTime(documentFormatter.parseTime(oneDateTime)).equals(oneDateTime));
+            // format time - parse back and forth should still equal
+            List<String> listDateTime = new LinkedList<>(Arrays.asList("1900-01-01", "2013-01-01", "2013-05-09", "2013-05-10", "2013-05-12", "2019-03-03", "2099-12-31"));
+            for (String oneDateTime : listDateTime) {
+                Validate.isTrue(documentFormatter.formatTime(documentFormatter.parseTime(oneDateTime)).equals(oneDateTime));
+            }
+            // corner cases
+            Validate.isTrue(!documentFormatter.formatTime(documentFormatter.parseTime("2012-02-31")).equals("2012-02-31"));
+            Validate.isTrue(documentFormatter.formatTime(documentFormatter.parseTime(null)).equals(""));
+            Validate.isTrue(documentFormatter.formatTime(documentFormatter.parseTime("")).equals(""));
         }
-        // corner cases
-        Validate.isTrue(!documentFormatter.formatTime(documentFormatter.parseTime("2012-02-31")).equals("2012-02-31"));
-        Validate.isTrue(documentFormatter.formatTime(documentFormatter.parseTime(null)).equals(""));
-        Validate.isTrue(documentFormatter.formatTime(documentFormatter.parseTime("")).equals(""));
     }
 
     @AfterAll
